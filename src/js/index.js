@@ -1,7 +1,7 @@
 import '../css/styles.css';
 import Notiflix from 'notiflix';
 import debounce from 'lodash';
-import { fetchBreeds } from './cat-api.js';
+import { fetchBreeds, fetchCatByBreed } from './cat-api.js';
 
 const DEBOUNCE_DELAY = 300;
 
