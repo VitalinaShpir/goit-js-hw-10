@@ -63,6 +63,54 @@ function openBreeds() {
 openBreeds();
 
 
+function fetchCatInfo(breedId) {
+  showLoader();
+  hideCatInfo();
+
+  fetchCatByBreed(breedId)
+    .then(cats => {
+      if (cats.length > 0) {
+        const cat = cats[0];
+        renderCatCard(cat);
+      } else {
+        throw new Error('No cat found for the selected breed.');
+      }
+
+      hideLoader();
+    })
+    .catch(error => {
+      hideLoader();
+      showError();
+      console.error(error);
+    });
+}
+
+breedSelect.addEventListener('change', evt => {
+  const selectedBreedId = evt.target.value;
+  fetchCatInfo(selectedBreedId);
+});
+
+function hideCatInfo() {
+  catInfo.style.display = 'none';
+}
+
+
+// function renderCatCard (events){
+//     const markup = events
+//     .map(({ name, url, breeds }) => {
+//       return `  <div><img class="cat-img" src="${url}" alt="${name}">
+//     <div class="descr-box">
+//     <h1 class="title">${breeds[0].name}</h1>
+//     <p class="description">${breeds[0].description}</p>
+//     <p class="temperament">${breeds[0].temperament}</p>
+// </div></div>' alt='${name}' width='200'></li>`;
+//     })
+//     .join("");
+// catInfo.insertAdjacentHTML("beforeend", markup);
+// }
+// console.log(renderCatCard (events))
+
+
 
 function showError() {
   errorRef.style.display = 'block';
@@ -71,60 +119,4 @@ function showError() {
 function hideError() {
   errorRef.style.display = 'none';
 }
-
-
-
-// function showCatInfo(cat) {
-//   catImageElement.src = cat.url;
-//   catBreedElement.textContent = cat.breeds[0].name;
-//   catDescriptionElement.textContent = cat.breeds[0].description;
-//   catTemperamentElement.textContent = `Temperament: ${cat.breeds[0].temperament}`;
-
-//   catInfoContainerElement.style.display = 'block';
-// }
-
-
-
-
-// function hideCatInfo() {
-//   catInfoContainerElement.style.display = 'none';
-// }
-
-
-
-
-
-
-
-
-
-
-// function fetchAndDisplayCatInfo(breedId) {
-//   showLoader();
-//   hideCatInfo();
-
-//   fetchCatByBreed(breedId)
-//     .then(cats => {
-//       if (cats.length > 0) {
-//         const cat = cats[0];
-//         showCatInfo(cat);
-//       } else {
-//         throw new Error('No cat found for the selected breed.');
-//       }
-
-//       hideLoader();
-//     })
-//     .catch(error => {
-//       hideLoader();
-//       showError();
-//       console.error(error);
-//     });
-// }
-
-
-
-// breedSelectElement.addEventListener('change', event => {
-//   const selectedBreedId = event.target.value;
-//   fetchAndDisplayCatInfo(selectedBreedId);
-// });
 
