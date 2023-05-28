@@ -7,7 +7,7 @@ body {
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fafafa;
+  background-color: #ea85e393;
   color: #212121;
   line-height: 1.5;
 }
@@ -21,6 +21,7 @@ body {
 
 .is-hidden{
   display: none;
+  border: none;
 }
 
 .container{
@@ -35,9 +36,13 @@ body {
   margin-bottom: 40px;
   display: flex;
   gap: 25px;
-  /* border: 2px solid #605e5e;
-  border-radius: 25px;
-box-shadow: 10px 5px 5px rgb(67, 65, 65); */
+}
+
+.open-box{
+  background-color: rgba(216, 190, 251, 0.814);
+  border: 2px solid #a048f8;
+  border-radius: 10px;
+box-shadow: 10px 5px 5px rgb(67, 65, 65);
 }
 
 .breed-select {

@@ -2,15 +2,16 @@ import { fetchBreeds, fetchCatByBreed } from './cat-api';
 import '../css/styles.css';
 import Notiflix from 'notiflix';
 import SlimSelect from 'slim-select';
+import 'slim-select/dist/slimselect.css';
 
 
 
 const breedSelect = document.querySelector('.breed-select');
 const loaderRef = document.querySelector('.loader');
-const errorRef = document.querySelector('.error');
+// const errorRef = document.querySelector('.error');
 const catInfo = document.querySelector('.cat-info');
-const catImg = document.querySelector('.cat-img');
-const catDescr = document.querySelector('.cat-descr');
+// const catImg = document.querySelector('.cat-img');
+// const catDescr = document.querySelector('.cat-descr');
 
 breedSelect.addEventListener('change', onBreedChange);
 
@@ -22,7 +23,10 @@ Notiflix.Loading.circle('Loading data, please wait...');
       .then(breeds => {
         Notiflix.Loading.remove();
         loaderRef.classList.remove('is-hidden');
-        renderBreedList(breeds)
+        renderBreedList(breeds);
+        new SlimSelect({
+          select: '#single'
+        })
     })
       .catch(error => {
         console.log(error);
@@ -41,9 +45,6 @@ function renderBreedList(breeds){
   breedSelect.innerHTML = breeds.map(breed => {
     return `<option value="${breed.reference_image_id}">${breed.name}</option>`;
   }).join('');
-  new SlimSelect({
-    select: '#single'
-  })
 }
 
 
@@ -51,11 +52,14 @@ function renderBreedList(breeds){
 
 function onBreedChange(e){
   loaderRef.classList.remove('is-hidden');
-  // catImg.innerHTML = '';
-  // catDescr.innerHTML = '';
   const breedId = e.target.value;
   fetchCatByBreed(breedId)
-      .then(breed => renderCatCard(breed))
+      .then(breed => {
+        renderCatCard(breed);
+        Notiflix.Loading.remove();
+        catInfo.classList.remove('is-hidden');
+        catInfo.classList.add('open-box')
+    })
       .catch(error => {
         console.log(error);
         Notiflix.Notify.failure(
@@ -77,4 +81,4 @@ function renderCatCard (breed){
  
 }
 
-console.log(catInfo)
+
