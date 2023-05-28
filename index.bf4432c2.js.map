@@ -1,1 +1,0 @@
-{"mappings":"AAIAA,QAAQC,IAAI,eAEZD,QAAQC,IALN","sources":["src/js/cat-api.js"],"sourcesContent":["const API =\n  'live_0P4LYrUD2RzxWsDzIlhzu1TTwJUDuhYwNccomvc5O50B6yfZQVjWwUSTbk8vvIaw';\n\n\nconsole.log('hello!!!111');\n\nconsole.log(API);\n"],"names":["console","log"],"version":3,"file":"index.bf4432c2.js.map"}
