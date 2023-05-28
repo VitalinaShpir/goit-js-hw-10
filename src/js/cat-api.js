@@ -3,3 +3,5 @@ const API =
 
 
 console.log('hello!!!111');
+
+console.log(API);

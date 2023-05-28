@@ -1,9 +1,29 @@
 import '../css/styles.css';
 import Notiflix from 'notiflix';
-import debounce from 'lodash';
-// import { fetchBreeds, fetchCatByBreed } from './cat-api.js';
 
-const API = "live_0P4LYrUD2RzxWsDzIlhzu1TTwJUDuhYwNccomvc5O50B6yfZQVjWwUSTbk8vvIaw";
+const API =
+  'live_HEs7npt4enTv8IppoFAzotzjElNW9aw61wQB5T2Fw18DPSakhIju9elgFzOgYqmc';
+
+
+const fetchBreeds = () => {
+  return fetch(`https://api.thecatapi.com/v1/breeds?api_key=${API}`).then(response => {
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
+    return response.json();
+  });
+};
+
+
+const fetchCatByBreed = breedId => {
+  return fetch(`https://api.thecatapi.com/v1/images/${breedId}?api_key=${API}`).then(response => {
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
+    return response.json();
+  });
+};
+
 
 const breedSelect = document.querySelector('.breed-select');
 const loaderRef = document.querySelector('.loader');
@@ -12,90 +32,61 @@ const catInfo = document.querySelector('.cat-info');
 const catImg = document.querySelector('.cat-img');
 const catDescr = document.querySelector('.cat-descr');
 
-console.log('hello!!21111222')
+breedSelect.addEventListener('change', onBreedChange);
 
- function fetchBreeds() {
-    return fetch(`https://api.thecatapi.com/v1/breeds?api_key=${API}`).then(
-      response => {
-        if (!response.ok) {
-          throw new Error(response.status);
-        }
-        return response.json();
-      }
-    );
-  }
-  
-   function fetchCatByBreed(breed) {
-    return fetch(
-      `https://api.thecatapi.com/v1/images/search?breed_ids=${breed}&x-api-key=${API}`
-    ).then(response => {
-      if (!response.ok) {
-        throw new Error(response.status);
-      }
-      
-      return response.json();
-    });
-  }
-console.log(fetchCatByBreed('acur'))
+Notiflix.Loading.circle('Loading data, please wait...');
 
-//   -----------------------------------------------
-
-
-function openBreeds() {
-    fetchBreeds()
-      .then(breeds => {
-        breeds.forEach(breed => {
-          const option = document.createElement('option');
-          option.value = breed.id;
-          option.textContent = breed.name;
-          breedSelect.appendChild(option);
-          loaderRef.style.display = 'block';
-        })
-      })
+renderBreeds();
+function renderBreeds(){
+  loaderRef.classList.remove('is-hidden');
+  fetchBreeds()
+      .then(breeds => renderBreedList(breeds))
       .catch(error => {
-        breedSelect.style.display = 'block';
-        loaderRef.style.display = 'none';
-        errorRef.style.display = 'block';
-        console.error(error);
-      });
-  }
-  openBreeds();
+        console.log(error);
+        Notiflix.Notify.failure(
+          'Oops! Something went wrong! Try reloading the page!'
+        );
+      })
+      .finally(() => {
+        breedSelect.classList.remove('is-hidden');
+        loaderRef.classList.add('is-hidden');
+      })
+}
 
 
-//   ----------------------------------------------
+function renderBreedList(breeds){
+  const listMarkup = breeds.map(breed => {
+    return `<option value="${breed.reference_image_id}">${breed.name}</option>`;
+  }).join('');
 
-
-breedSelect.addEventListener('change', onBreedCange);
-
-function onBreedCange(evt){
-    loaderRef.style.display = 'block';
-  catImg.innerHTML = '';
-  catDescr.innerHTML = '';
-  const breed = evt.target.value;
-  console.log(breed);
-  fetchCatByBreed(breed)
-    .then(breed => renderCatCard(breed))
-    .catch(error => Notiflix.Notify.failure( 'Oops! Something went wrong! Try reloading the page!'))
-    .finally(() => loaderRef.style.display = 'block');
+breedSelect.insertAdjacentHTML('beforeend', listMarkup);
 }
 
 
 
-// ----------------------------------------------
 
+function onBreedChange(e){
+  loaderRef.classList.remove('is-hidden');
+  catImg.innerHTML = '';
+  catDescr.innerHTML = '';
+  const breedId = e.target.value;
+  fetchCatByBreed(breedId)
+      .then(breed => renderCatCard(breed))
+      .catch(error => {
+        console.log(error);
+        Notiflix.Notify.failure(
+          'Oops! Something went wrong! Try reloading the page!'
+        );
+      })
+      .finally(()=> loaderRef.classList.add('is-hidden'));
 
-
-
-//   -----------------------------------------------
+}
 
 
 function renderCatCard (breed){
-    const markupImg = `<img class="cat-picture" width=400 src="${breed.url}" alt="bbb">`;
-    // const markupDescr = `<h1 class="cat-name">${breed.breeds[0].name}</h2><p class="cat-description
-    // ">${breed.breeds[0].description}</p><p class="cat-temperament"><b>Temperament:</b> ${breed.breeds[0].temperament}</p>`;
-    catInfo.insertAdjacentHTML('beforeend', markupImg);
-    // catInfo.insertAdjacentHTML('beforeend', markupDescr);
-  }
-
-
-  
+  const markupImg = `<img class="cat-picture" width=400 src="${breed.url}" alt="bbb">`;
+  const markupDescr = `<h1 class="cat-name">${breed.breeds[0].name}</h2><p class="cat-description
+  // ">${breed.breeds[0].description}</p><p class="cat-temperament"><b>Temperament:</b> ${breed.breeds[0].temperament}</p>`;
+  catInfo.insertAdjacentHTML('beforeend', markupImg);
+  catInfo.insertAdjacentHTML('beforeend', markupDescr);
+}
