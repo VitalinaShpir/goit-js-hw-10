@@ -18,3 +18,37 @@ body {
   max-width: 320px;
   margin-bottom: 16px;
 }
+
+.is-hidden{
+  display: none;
+}
+
+.container{
+  padding: 15px;
+  width: 1158px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cat-info {
+  margin-top: 40px;
+  margin-bottom: 40px;
+  display: flex;
+  gap: 25px;
+  /* border: 2px solid #605e5e;
+  border-radius: 25px;
+box-shadow: 10px 5px 5px rgb(67, 65, 65); */
+}
+
+.breed-select {
+  padding: 5px;
+  font-size: 16px;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid rgb(68, 68, 68);
+  margin-bottom: 40px;
+}
+
+.breed-select:hover {
+  border-bottom: 1px solid #1e1e1e;
+}

@@ -1,28 +1,8 @@
+// import { fetchBreeds, fetchCatByBreed } from './cat-api';
 import '../css/styles.css';
 import Notiflix from 'notiflix';
+import SlimSelect from 'slim-select';
 
-const API =
-  'live_HEs7npt4enTv8IppoFAzotzjElNW9aw61wQB5T2Fw18DPSakhIju9elgFzOgYqmc';
-
-
-const fetchBreeds = () => {
-  return fetch(`https://api.thecatapi.com/v1/breeds?api_key=${API}`).then(response => {
-    if (!response.ok) {
-      throw new Error(response.status);
-    }
-    return response.json();
-  });
-};
-
-
-const fetchCatByBreed = breedId => {
-  return fetch(`https://api.thecatapi.com/v1/images/${breedId}?api_key=${API}`).then(response => {
-    if (!response.ok) {
-      throw new Error(response.status);
-    }
-    return response.json();
-  });
-};
 
 
 const breedSelect = document.querySelector('.breed-select');
@@ -36,11 +16,35 @@ breedSelect.addEventListener('change', onBreedChange);
 
 Notiflix.Loading.circle('Loading data, please wait...');
 
-renderBreeds();
-function renderBreeds(){
-  loaderRef.classList.remove('is-hidden');
+const API =
+  'live_HEs7npt4enTv8IppoFAzotzjElNW9aw61wQB5T2Fw18DPSakhIju9elgFzOgYqmc';
+
+
+    const fetchBreeds = () => {
+  return fetch(`https://api.thecatapi.com/v1/breeds?api_key=${API}`).then(response => {
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
+    return response.json();
+  });
+};
+
+
+    const fetchCatByBreed = breedId => {
+  return fetch(`https://api.thecatapi.com/v1/images/${breedId}?api_key=${API}`).then(response => {
+    if (!response.ok) {
+      throw new Error(response.status);
+    }
+    return response.json();
+  });
+};
+ 
   fetchBreeds()
-      .then(breeds => renderBreedList(breeds))
+      .then(breeds => {
+        Notiflix.Loading.remove();
+        loaderRef.classList.remove('is-hidden');
+        renderBreedList(breeds)
+    })
       .catch(error => {
         console.log(error);
         Notiflix.Notify.failure(
@@ -51,15 +55,16 @@ function renderBreeds(){
         breedSelect.classList.remove('is-hidden');
         loaderRef.classList.add('is-hidden');
       })
-}
+
 
 
 function renderBreedList(breeds){
-  const listMarkup = breeds.map(breed => {
+  breedSelect.innerHTML = breeds.map(breed => {
     return `<option value="${breed.reference_image_id}">${breed.name}</option>`;
   }).join('');
-
-breedSelect.insertAdjacentHTML('beforeend', listMarkup);
+  new SlimSelect({
+    select: '#single'
+  })
 }
 
 
@@ -67,8 +72,8 @@ breedSelect.insertAdjacentHTML('beforeend', listMarkup);
 
 function onBreedChange(e){
   loaderRef.classList.remove('is-hidden');
-  catImg.innerHTML = '';
-  catDescr.innerHTML = '';
+  // catImg.innerHTML = '';
+  // catDescr.innerHTML = '';
   const breedId = e.target.value;
   fetchCatByBreed(breedId)
       .then(breed => renderCatCard(breed))
@@ -84,9 +89,13 @@ function onBreedChange(e){
 
 
 function renderCatCard (breed){
+  catInfo.innerHTML = '';
   const markupImg = `<img class="cat-picture" width=400 src="${breed.url}" alt="bbb">`;
-  const markupDescr = `<h1 class="cat-name">${breed.breeds[0].name}</h2><p class="cat-description
-  // ">${breed.breeds[0].description}</p><p class="cat-temperament"><b>Temperament:</b> ${breed.breeds[0].temperament}</p>`;
+  const markupDescr = `<div><h1 class="cat-name">${breed.breeds[0].name}</h2><p class="cat-description
+  // ">${breed.breeds[0].description}</p><p class="cat-temperament"><b>Temperament:</b> ${breed.breeds[0].temperament}</p></div>`;
   catInfo.insertAdjacentHTML('beforeend', markupImg);
   catInfo.insertAdjacentHTML('beforeend', markupDescr);
+ 
 }
+
+console.log(catInfo)
